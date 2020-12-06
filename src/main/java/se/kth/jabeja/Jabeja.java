@@ -42,7 +42,6 @@ public class Jabeja {
       //reduce the temperature
       saCoolDown();
       report();
-      System.out.println("Completed round " + round);
     }
   }
 
@@ -69,14 +68,13 @@ public class Jabeja {
 
     if (config.getNodeSelectionPolicy() == NodeSelectionPolicy.HYBRID
             || config.getNodeSelectionPolicy() == NodeSelectionPolicy.LOCAL) {
-        Integer[] neighbors = new Integer[nodep.getNeighbours().size()];
-        nodep.getNeighbours().toArray(neighbors);
-        Node candidatePartner = findPartner(nodeId, neighbors);
-        if (candidatePartner == null) {
-          doRandom = true;
-        } else {
-          partner = candidatePartner;
-        }
+      Integer[] sampledNeighbors = getNeighbors(nodep);
+      Node candidatePartner = findPartner(nodeId, sampledNeighbors);
+      if (candidatePartner == null) {
+        doRandom = true;
+      } else {
+        partner = candidatePartner;
+      }
     }
 
     if (doRandom || config.getNodeSelectionPolicy() == NodeSelectionPolicy.RANDOM)
@@ -87,6 +85,7 @@ public class Jabeja {
       int temp_color = nodep.getColor();
       nodep.setColor(partner.getColor());
       partner.setColor(temp_color);
+      numberOfSwaps ++;
     }
   }
 
@@ -242,12 +241,11 @@ public class Jabeja {
 
     int edgeCut = grayLinks / 2;
 
-    /*
     logger.info("round: " + round +
             ", edge cut:" + edgeCut +
             ", swaps: " + numberOfSwaps +
             ", migrations: " + migrations);
-     */
+
     saveToFile(edgeCut, migrations);
   }
 
