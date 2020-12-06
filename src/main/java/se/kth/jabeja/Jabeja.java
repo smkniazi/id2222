@@ -102,7 +102,7 @@ public class Jabeja {
       Node nodeq = entireGraph.get(idq);
       double oldB = benefit(nodep, nodeq, alpha);
       double newB = benefitSwap(nodep, nodeq, alpha);
-      if (newB * T > oldB || newB > highestBenefit) {
+      if (newB * T > oldB && newB > highestBenefit) {
         bestPartner = nodeq;
         highestBenefit = newB;
       }
