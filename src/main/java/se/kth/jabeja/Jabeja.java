@@ -28,6 +28,7 @@ public class Jabeja {
     this.numberOfSwaps = 0;
     this.config = config;
     this.T = config.getTemperature();
+    this.T_min = 0.00001;  // Not very sure about this
   }
 
 
@@ -50,10 +51,11 @@ public class Jabeja {
    */
   private void saCoolDown(){
     // TODO for second task
-    if (T > 1)
-      T -= config.getDelta();
-    if (T < 1)
-      T = 1;
+    // if (T > 1)
+    //   T -= config.getDelta();
+    // if (T < 1)
+    //   T = 1;
+    T = Math.max(T - config.getDelta(), T_min);
   }
 
   /**
@@ -89,7 +91,7 @@ public class Jabeja {
     }
   }
 
-  public Node findPartner(int nodeId, Integer[] nodes){
+  public Node findPartner(int nodeId, Integer[] nodes) {
     double alpha = config.getAlpha();
 
     Node nodep = entireGraph.get(nodeId);
@@ -102,12 +104,20 @@ public class Jabeja {
       Node nodeq = entireGraph.get(idq);
       double oldB = benefit(nodep, nodeq, alpha);
       double newB = benefitSwap(nodep, nodeq, alpha);
-      if (newB * T > oldB || newB > highestBenefit) {
+      // if (newB * T > oldB && newB > highestBenefit) {
+      if (Math.random() > acceptanceProbability(oldB, newB)) {
         bestPartner = nodeq;
         highestBenefit = newB;
       }
     }
     return bestPartner;
+  }
+
+  /**
+   * Probability that the swap is accepted
+   */
+  private double acceptanceProbability(double oldCost, double newCost) {
+    return Math.exp((newCost - oldCost)/T);
   }
 
   /**
