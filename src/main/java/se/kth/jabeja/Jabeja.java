@@ -18,6 +18,7 @@ public class Jabeja {
   private int numberOfSwaps;
   private int round;
   private float T;
+  private float T_min;
   private boolean resultFileCreated = false;
 
   //-------------------------------------------------------------------
@@ -28,7 +29,7 @@ public class Jabeja {
     this.numberOfSwaps = 0;
     this.config = config;
     this.T = config.getTemperature();
-    this.T_min = 0.00001;  // Not very sure about this
+    this.T_min = 0.00001f;  // Not very sure about this
   }
 
 
@@ -105,7 +106,9 @@ public class Jabeja {
       double oldB = benefit(nodep, nodeq, alpha);
       double newB = benefitSwap(nodep, nodeq, alpha);
       // if (newB * T > oldB && newB > highestBenefit) {
-      if (Math.random() > acceptanceProbability(oldB, newB)) {
+      double ap = acceptanceProbability(oldB, newB);
+      System.out.println(ap);
+      if (Math.random() > ap) {
         bestPartner = nodeq;
         highestBenefit = newB;
       }
