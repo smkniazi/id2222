@@ -64,32 +64,70 @@ public class Jabeja {
     Node partner = null;
     Node nodep = entireGraph.get(nodeId);
 
+    boolean doRandom = false;
+
     if (config.getNodeSelectionPolicy() == NodeSelectionPolicy.HYBRID
             || config.getNodeSelectionPolicy() == NodeSelectionPolicy.LOCAL) {
-      // swap with random neighbors
-      // TODO
+      Integer[] sampledNeighbors = getNeighbors(nodep);
+      Node candidatePartner = findPartner(nodeId, sampledNeighbors);
+      if (candidatePartner == null) {
+        doRandom = true;
+      } else {
+        partner = candidatePartner;
+      }
     }
 
-    if (config.getNodeSelectionPolicy() == NodeSelectionPolicy.HYBRID
-            || config.getNodeSelectionPolicy() == NodeSelectionPolicy.RANDOM) {
-      // if local policy fails then randomly sample the entire graph
-      // TODO
-    }
+    if (doRandom || config.getNodeSelectionPolicy() == NodeSelectionPolicy.RANDOM)
+      partner = findPartner(nodeId, getSample(nodeId));
 
     // swap the colors
-    // TODO
+    if (partner != null) {
+      int temp_color = nodep.getColor();
+      nodep.setColor(partner.getColor());
+      partner.setColor(temp_color);
+      numberOfSwaps ++;
+    }
   }
 
   public Node findPartner(int nodeId, Integer[] nodes){
+    double alpha = config.getAlpha();
 
     Node nodep = entireGraph.get(nodeId);
-
     Node bestPartner = null;
     double highestBenefit = 0;
 
-    // TODO
-
+    // Iterate all nodes and get the one that maximizes
+    // utility if swapped with nodep
+    for (int idq: nodes) {
+      Node nodeq = entireGraph.get(idq);
+      double oldB = benefit(nodep, nodeq, alpha);
+      double newB = benefitSwap(nodep, nodeq, alpha);
+      if (newB * T > oldB && newB > highestBenefit) {
+        bestPartner = nodeq;
+        highestBenefit = newB;
+      }
+    }
     return bestPartner;
+  }
+
+  /**
+   * Compute the current benefit of two nodes. Benefit is defined as
+   * U(p, q) = d_p(p)^alpha + d_q(q)^alpha (Eq. 5 of the paper)
+   * where d_p(p) is the number of neighbors of p with its same color.
+   */
+  private double benefit(Node nodep, Node nodeq, double alpha) {
+    int dpp = getDegree(nodep, nodep.getColor());
+    int dqq = getDegree(nodeq, nodeq.getColor());
+    return Math.pow(dpp, alpha) + Math.pow(dqq, alpha);
+  }
+
+  /**
+   * Compute the benefit of the two nodes if their color was swapped.
+   */
+  private double benefitSwap(Node nodep, Node nodeq, double alpha) {
+    int dpq = getDegree(nodep, nodeq.getColor());
+    int dqp = getDegree(nodeq, nodep.getColor());
+    return Math.pow(dpq, alpha) + Math.pow(dqp, alpha);
   }
 
   /**
