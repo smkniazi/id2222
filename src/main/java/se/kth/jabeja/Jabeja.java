@@ -19,6 +19,8 @@ public class Jabeja {
   private int round;
   private float T;
   private float T_min;
+  private float exp_weight;
+  private double factor;
   private boolean resultFileCreated = false;
 
   //-------------------------------------------------------------------
@@ -30,6 +32,8 @@ public class Jabeja {
     this.config = config;
     this.T = config.getTemperature();
     this.T_min = 0.00001f;  // Not very sure about this
+    // this.exp_weight = 100000;  // Not very sure about this
+    this.factor = 0.5;  // Not very sure about this
   }
 
 
@@ -103,6 +107,7 @@ public class Jabeja {
     // utility if swapped with nodep
     for (int idq: nodes) {
       Node nodeq = entireGraph.get(idq);
+      // double degree_sum =  + nodeq.getDegree();
       double oldB = benefit(nodep, nodeq, alpha);
       double newB = benefitSwap(nodep, nodeq, alpha);
       // if (newB * T > oldB && newB > highestBenefit) {
@@ -125,7 +130,7 @@ public class Jabeja {
    * Probability that the swap is accepted
    */
   private double acceptanceProbability(double oldCost, double newCost) {
-    return Math.exp((newCost - oldCost)/T);
+    return factor*Math.exp((newCost - oldCost)/T);
   }
 
   /**
