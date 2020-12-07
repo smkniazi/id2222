@@ -100,6 +100,8 @@ public class Jabeja {
     // utility if swapped with nodep
     for (int idq: nodes) {
       Node nodeq = entireGraph.get(idq);
+      if (nodeq.getColor() == nodeq.getColor())
+        continue;
       double oldB = benefit(nodep, nodeq, alpha);
       double newB = benefitSwap(nodep, nodeq, alpha);
       if (newB * T > oldB && newB > highestBenefit) {
