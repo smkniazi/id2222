@@ -106,12 +106,17 @@ public class Jabeja {
       double oldB = benefit(nodep, nodeq, alpha);
       double newB = benefitSwap(nodep, nodeq, alpha);
       // if (newB * T > oldB && newB > highestBenefit) {
-      double ap = acceptanceProbability(-oldB, -newB); // Cost = - benefit
+      double ap = acceptanceProbability(oldB, newB);
       // System.out.println(ap);
-      if (ap < Math.random()) {
+      if (oldB != newB  && Math.random() < ap) {
+        // System.out.println("yes");
         bestPartner = nodeq;
         highestBenefit = newB;
       }
+      // else {
+      //   System.out.println("no");
+      // }
+      
     }
     return bestPartner;
   }
