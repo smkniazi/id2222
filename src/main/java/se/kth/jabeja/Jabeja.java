@@ -33,7 +33,7 @@ public class Jabeja {
     this.T = config.getTemperature();
     this.T_min = 0.00001f;  // Not very sure about this
     // this.exp_weight = 100000;  // Not very sure about this
-    this.factor = 0.5;  // Not very sure about this
+    this.factor = 1.0;  // Not very sure about this
   }
 
 
@@ -47,6 +47,13 @@ public class Jabeja {
       //one cycle for all nodes have completed.
       //reduce the temperature
       saCoolDown();
+      // Restart
+      if (round%300 == 0) {
+        T = config.getTemperature();
+        System.out.println("##############3");
+        System.out.println(T);
+        System.out.println("##############3");
+      }
       report();
     }
   }
@@ -60,7 +67,7 @@ public class Jabeja {
     //   T -= config.getDelta();
     // if (T < 1)
     //   T = 1;
-    T = Math.max(T - config.getDelta(), T_min);
+    T = Math.max(T*config.getDelta(), T_min);
   }
 
   /**
