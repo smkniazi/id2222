@@ -33,7 +33,7 @@ public class Jabeja {
     this.T = config.getTemperature();
     this.T_min = 0.00001f;  // Not very sure about this
     // this.exp_weight = 100000;  // Not very sure about this
-    this.factor = 1.0;  // Not very sure about this
+    this.factor = config.getFactor();  // Not very sure about this
   }
 
 
@@ -50,12 +50,10 @@ public class Jabeja {
       // Restart
       if (round%300 == 0) {
         T = config.getTemperature();
-        System.out.println("##############3");
-        System.out.println(T);
-        System.out.println("##############3");
       }
-      report();
+      report(true, false);  // Save, do not print
     }
+    report(false, true);  // Do not save, print
   }
 
   /**
@@ -244,7 +242,7 @@ public class Jabeja {
    *
    * @throws IOException
    */
-  private void report() throws IOException {
+  private void report(boolean save, boolean print) throws IOException {
     int grayLinks = 0;
     int migrations = 0; // number of nodes that have changed the initial color
     int size = entireGraph.size();
@@ -271,12 +269,14 @@ public class Jabeja {
 
     int edgeCut = grayLinks / 2;
 
-    logger.info("round: " + round +
-            ", edge cut:" + edgeCut +
-            ", swaps: " + numberOfSwaps +
-            ", migrations: " + migrations);
-
-    saveToFile(edgeCut, migrations);
+    if (print) {
+      logger.info("round: " + round +
+              ", edge cut:" + edgeCut +
+              ", swaps: " + numberOfSwaps +
+              ", migrations: " + migrations);
+    }
+    if (save)
+      saveToFile(edgeCut, migrations);
   }
 
   private void saveToFile(int edgeCuts, int migrations) throws IOException {
@@ -295,7 +295,8 @@ public class Jabeja {
             "RNSS" + "_" + config.getRandomNeighborSampleSize() + "_" +
             "URSS" + "_" + config.getUniformRandomSampleSize() + "_" +
             "A" + "_" + config.getAlpha() + "_" +
-            "R" + "_" + config.getRounds() + ".txt";
+            "R" + "_" + config.getRounds() + "_" +
+            "factor" + "_" + factor + ".txt";
 
     if (!resultFileCreated) {
       File outputDir = new File(config.getOutputDir());
