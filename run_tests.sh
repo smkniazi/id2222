@@ -8,10 +8,10 @@
 ./run.sh -graph=graphs/facebook.graph -temp=1.0
 
 # Temp = 2
-./run.sh -graph=graphs/3elt.graph -temp=1.0
-./run.sh -graph=graphs/add20.graph -temp=1.0
-./run.sh -graph=graphs/twitter.graph -temp=1.0
-./run.sh -graph=graphs/facebook.graph -temp=1.0
+./run.sh -graph=graphs/3elt.graph -temp=2.0
+./run.sh -graph=graphs/add20.graph -temp=2.0
+./run.sh -graph=graphs/twitter.graph -temp=2.0
+./run.sh -graph=graphs/facebook.graph -temp=2.0
 
 # SIMULATED ANNEALING EXPERIMENTS
 # Experiments for different delta
