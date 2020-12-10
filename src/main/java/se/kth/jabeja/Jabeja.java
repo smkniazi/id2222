@@ -65,7 +65,10 @@ public class Jabeja {
    * Simulated analealing cooling function
    */
   private void saCoolDown(){
-    T = Math.max(T*config.getDelta(), T_min);
+    if (simulatedAnnealing)
+      T = Math.max(T*config.getDelta(), T_min);
+    else
+      T = Math.max(T - config.getDelta(), T_min);
   }
 
   /**
