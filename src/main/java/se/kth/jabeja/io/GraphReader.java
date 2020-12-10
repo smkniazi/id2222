@@ -51,7 +51,7 @@ public class GraphReader {
         break;
       }
 
-      logger.info(graphFilePath + ". Nodes: " + numNodes + ", Edges: " + numEdges);
+      //logger.info(graphFilePath + ". Nodes: " + numNodes + ", Edges: " + numEdges);
 
       int id = 0;
       int partitionSize = numNodes / noOfPartitions;
@@ -142,6 +142,6 @@ public class GraphReader {
       sb.append("[ Color: ").append(i).append(",").append(" Count: ").append(count).append(" ] ");
     }
 
-    logger.info(sb);
+    //logger.info(sb);
   }
 }

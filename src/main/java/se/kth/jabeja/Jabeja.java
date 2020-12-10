@@ -18,6 +18,9 @@ public class Jabeja {
   private int numberOfSwaps;
   private int round;
   private float T;
+  private float T_min;
+  private boolean simulatedAnnealing;
+  private double factor;
   private boolean resultFileCreated = false;
 
   //-------------------------------------------------------------------
@@ -28,6 +31,14 @@ public class Jabeja {
     this.numberOfSwaps = 0;
     this.config = config;
     this.T = config.getTemperature();
+    this.T_min = 0.00001f;  // Not very sure about this
+    this.factor = config.getFactor();  // Not very sure about this
+    this.simulatedAnnealing = config.getSA();
+    String infoStr;
+    if (simulatedAnnealing)
+      infoStr = "Simulated annealing with factor " + factor;
+    else infoStr = "Standard JaBeJa with initial T " + T;
+    logger.info(infoStr);
   }
 
 
@@ -41,19 +52,23 @@ public class Jabeja {
       //one cycle for all nodes have completed.
       //reduce the temperature
       saCoolDown();
-      report();
+      // Restart
+      if (round%300 == 0) {
+        T = config.getTemperature();
+      }
+      report(true, false);  // Save, do not print
     }
+    report(false, true);  // Do not save, print
   }
 
   /**
    * Simulated analealing cooling function
    */
   private void saCoolDown(){
-    // TODO for second task
-    if (T > 1)
-      T -= config.getDelta();
-    if (T < 1)
-      T = 1;
+    if (simulatedAnnealing)
+      T = Math.max(T*config.getDelta(), T_min);
+    else
+      T = Math.max(T - config.getDelta(), T_min);
   }
 
   /**
@@ -89,7 +104,7 @@ public class Jabeja {
     }
   }
 
-  public Node findPartner(int nodeId, Integer[] nodes){
+  public Node findPartner(int nodeId, Integer[] nodes) {
     double alpha = config.getAlpha();
 
     Node nodep = entireGraph.get(nodeId);
@@ -101,15 +116,29 @@ public class Jabeja {
     for (int idq: nodes) {
       Node nodeq = entireGraph.get(idq);
       if (nodeq.getColor() == nodep.getColor())
-        continue;
+        continue;  // Do not check for nodes with same color
       double oldB = benefit(nodep, nodeq, alpha);
       double newB = benefitSwap(nodep, nodeq, alpha);
-      if (newB * T > oldB && newB > highestBenefit) {
+      boolean swap;
+      if (simulatedAnnealing) {
+        double ap = acceptanceProbability(oldB, newB);
+        swap = (oldB != newB) && (Math.random() < ap);
+      } else {
+        swap = (newB * T > oldB) && (newB > highestBenefit);
+      }
+      if (swap) {
         bestPartner = nodeq;
         highestBenefit = newB;
       }
     }
     return bestPartner;
+  }
+
+  /**
+   * Probability that the swap is accepted
+   */
+  private double acceptanceProbability(double oldCost, double newCost) {
+    return factor*Math.exp((newCost - oldCost)/T);
   }
 
   /**
@@ -216,7 +245,7 @@ public class Jabeja {
    *
    * @throws IOException
    */
-  private void report() throws IOException {
+  private void report(boolean save, boolean print) throws IOException {
     int grayLinks = 0;
     int migrations = 0; // number of nodes that have changed the initial color
     int size = entireGraph.size();
@@ -243,12 +272,14 @@ public class Jabeja {
 
     int edgeCut = grayLinks / 2;
 
-    logger.info("round: " + round +
-            ", edge cut:" + edgeCut +
-            ", swaps: " + numberOfSwaps +
-            ", migrations: " + migrations);
-
-    saveToFile(edgeCut, migrations);
+    if (print) {
+      logger.info("round: " + round +
+              ", edge cut:" + edgeCut +
+              ", swaps: " + numberOfSwaps +
+              ", migrations: " + migrations + "\n");
+    }
+    if (save)
+      saveToFile(edgeCut, migrations);
   }
 
   private void saveToFile(int edgeCuts, int migrations) throws IOException {
@@ -267,7 +298,13 @@ public class Jabeja {
             "RNSS" + "_" + config.getRandomNeighborSampleSize() + "_" +
             "URSS" + "_" + config.getUniformRandomSampleSize() + "_" +
             "A" + "_" + config.getAlpha() + "_" +
-            "R" + "_" + config.getRounds() + ".txt";
+            "R" + "_" + config.getRounds();
+    if (simulatedAnnealing) {
+      outputFilePath += "_SA_" + factor;
+    } else {
+      outputFilePath += "_jabeja";
+    }
+    outputFilePath += ".txt";
 
     if (!resultFileCreated) {
       File outputDir = new File(config.getOutputDir());

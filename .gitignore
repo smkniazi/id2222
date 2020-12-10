@@ -4,3 +4,8 @@
 .gitignore
 /output
 graph.png
+
+old_experiments/
+new_experiments/
+old_output/
+old_plots/

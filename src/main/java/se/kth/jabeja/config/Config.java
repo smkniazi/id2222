@@ -13,6 +13,18 @@ public class Config {
   private GraphInitColorPolicy initColorPolicy;
   private NodeSelectionPolicy nodeSelectionPolicy;
   private Float alpha;
+  private Double factor;
+  private boolean sa;
+
+  public Config setSA(boolean sa) {
+    this.sa = sa;
+    return this;
+  }
+
+  public Config setFactor(Double factor) {
+    this.factor = factor;
+    return this;
+  }
 
   public Config setAlpha(Float alpha) {
     this.alpha = alpha;
@@ -158,8 +170,23 @@ public class Config {
     return alpha;
   }
 
+  public Double getFactor() {
+    return factor;
+  }
+
+  public boolean getSA() {
+    return sa;
+  }
+
   public Config createJabejaConfig() {
     return new Config();
+  }
+
+  public Config validate() {
+    if (sa && (getTemperature() > 1)) {
+      throw new IllegalArgumentException("Simulated annealing requires temperature <= 1.");
+    }
+    return this;
   }
 
 }
