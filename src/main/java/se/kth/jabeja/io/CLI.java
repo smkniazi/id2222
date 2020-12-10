@@ -63,6 +63,9 @@ public class CLI {
   @Option(name = "-sa", usage = "Whether to use Simulated Annealing")
   private static boolean SA = false;
 
+  @Option(name = "-restart", usage = "Whether to periodically reset T")
+  private static boolean RESTART = false;
+
   public Config parseArgs(String[] args) throws FileNotFoundException {
     CmdLineParser parser = new CmdLineParser(this);
     parser.setUsageWidth(80);
@@ -119,6 +122,7 @@ public class CLI {
             .setAlpha(ALPHA)
             .setFactor(FACTOR)
             .setSA(SA)
+            .setRestart(RESTART)
             .validate();
   }
 }

@@ -20,6 +20,7 @@ public class Jabeja {
   private float T;
   private float T_min;
   private boolean simulatedAnnealing;
+  private boolean restart;  // whether to periodically  restart T
   private double factor;
   private boolean resultFileCreated = false;
 
@@ -31,8 +32,8 @@ public class Jabeja {
     this.numberOfSwaps = 0;
     this.config = config;
     this.T = config.getTemperature();
-    this.T_min = 0.00001f;  // Not very sure about this
-    this.factor = config.getFactor();  // Not very sure about this
+    this.factor = config.getFactor();
+    this.restart = config.getRestart();
     this.simulatedAnnealing = config.getSA();
     String infoStr;
     if (simulatedAnnealing)
@@ -53,7 +54,7 @@ public class Jabeja {
       //reduce the temperature
       saCoolDown();
       // Restart
-      if (round%300 == 0) {
+      if (restart && round%300 == 0) {
         T = config.getTemperature();
       }
       report(true, false);  // Save, do not print

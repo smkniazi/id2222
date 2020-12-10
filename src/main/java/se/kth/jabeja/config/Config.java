@@ -16,6 +16,11 @@ public class Config {
   private Double factor;
   private boolean sa;
 
+  public Config setRPestart(boolean restart) {
+    this.restart = restart;
+    return this;
+  }
+  
   public Config setSA(boolean sa) {
     this.sa = sa;
     return this;
@@ -176,6 +181,10 @@ public class Config {
 
   public boolean getSA() {
     return sa;
+  }
+
+  public boolean getRestart() {
+    return restart;
   }
 
   public Config createJabejaConfig() {
