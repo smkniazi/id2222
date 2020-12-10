@@ -1,17 +1,17 @@
 ./compile.sh
 
-# STANDARD JABEJA EXPERIMENTS
+# STANDARD JABEJA EXPERIMENTS (delta 0.003)
 # Temp = 1
-./run.sh -graph=graphs/3elt.graph -temp=1.0
-./run.sh -graph=graphs/add20.graph -temp=1.0
-./run.sh -graph=graphs/twitter.graph -temp=1.0
-./run.sh -graph=graphs/facebook.graph -temp=1.0
+./run.sh -graph=graphs/3elt.graph -temp=1.0 -delta 0.003
+./run.sh -graph=graphs/add20.graph -temp=1.0 -delta 0.003
+./run.sh -graph=graphs/twitter.graph -temp=1.0 -delta 0.003
+./run.sh -graph=graphs/facebook.graph -temp=1.0 -delta 0.003
 
 # Temp = 2
-./run.sh -graph=graphs/3elt.graph -temp=2.0
-./run.sh -graph=graphs/add20.graph -temp=2.0
-./run.sh -graph=graphs/twitter.graph -temp=2.0
-./run.sh -graph=graphs/facebook.graph -temp=2.0
+./run.sh -graph=graphs/3elt.graph -temp=2.0 -delta 0.003
+./run.sh -graph=graphs/add20.graph -temp=2.0 -delta 0.003
+./run.sh -graph=graphs/twitter.graph -temp=2.0 -delta 0.003
+./run.sh -graph=graphs/facebook.graph -temp=2.0 -delta 0.003
 
 # SIMULATED ANNEALING EXPERIMENTS
 # Experiments for different delta
