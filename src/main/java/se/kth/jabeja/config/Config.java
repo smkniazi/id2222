@@ -182,4 +182,11 @@ public class Config {
     return new Config();
   }
 
+  public Config validate() {
+    if (sa && (getTemperature() > 1)) {
+      throw new IllegalArgumentException("Simulated annealing requires temperature <= 1.");
+    }
+    return this;
+  }
+
 }

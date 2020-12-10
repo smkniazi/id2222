@@ -118,6 +118,7 @@ public class CLI {
             .setOutputDir(OUTPUT_DIR)
             .setAlpha(ALPHA)
             .setFactor(FACTOR)
-            .setSA(SA);
+            .setSA(SA)
+            .validate();
   }
 }
