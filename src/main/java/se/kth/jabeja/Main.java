@@ -37,6 +37,7 @@ public class Main {
         HashMap<Integer, Node> graph = readGraph();
 
         //start JaBeJa
+        System.out.println("Graph: " + config.getGraphFilePath());
         startJabeja(graph);
     }
 

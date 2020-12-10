@@ -13,6 +13,18 @@ public class Config {
   private GraphInitColorPolicy initColorPolicy;
   private NodeSelectionPolicy nodeSelectionPolicy;
   private Float alpha;
+  private Double factor;
+  private boolean sa;
+
+  public Config setSA(boolean sa) {
+    this.sa = sa;
+    return this;
+  }
+
+  public Config setFactor(Double factor) {
+    this.factor = factor;
+    return this;
+  }
 
   public Config setAlpha(Float alpha) {
     this.alpha = alpha;
@@ -156,6 +168,14 @@ public class Config {
     if (alpha == null) {
     }
     return alpha;
+  }
+
+  public Double getFactor() {
+    return factor;
+  }
+
+  public boolean getSA() {
+    return sa;
   }
 
   public Config createJabejaConfig() {
